@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { DURATION_SEC, eventQuestions, shuffle, signToken } from '@/lib/quiz';
-import { who } from '@/lib/store';
+import { putPerson, who } from '@/lib/store';
 
 export async function POST(req) {
   try {
     const { token } = await req.json();
-    const { room, p } = who(token);
+    const { room, p } = await who(token);
     const fail = (m, s = 400) => NextResponse.json({ message: m }, { status: s });
 
     if (!p) return fail('Session expired. Please join again.', 401);
@@ -32,6 +32,7 @@ export async function POST(req) {
       durationSeconds: DURATION_SEC,
       questions,
     };
+    await putPerson(room.code, p);
     return NextResponse.json(p.session);
   } catch (err) {
     console.error('API Start error:', err);

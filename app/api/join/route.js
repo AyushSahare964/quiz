@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { appendRow, signToken } from '@/lib/quiz';
-import { AVATARS, rooms } from '@/lib/store';
+import { AVATARS, getPeople, getRoom, putPerson } from '@/lib/store';
 
 export async function POST(req) {
   try {
@@ -10,7 +10,7 @@ export async function POST(req) {
     const fail = (m, s = 400) => NextResponse.json({ message: m }, { status: s });
 
     const code = f('code').toUpperCase();
-    const room = rooms.get(code);
+    const room = await getRoom(code);
     if (!room) return fail('Invalid quiz code. Check the code your organizer shared.', 404);
     if (room.status === 'ended') return fail('This quiz has already ended.');
 
@@ -24,7 +24,7 @@ export async function POST(req) {
     const avatar = AVATARS.includes(b.avatar) ? b.avatar : AVATARS[0];
 
     // Same email + phone re-joining (e.g. cleared browser) gets the same profile back.
-    const dup = [...room.people.values()].find(p => p.email === email);
+    const dup = (await getPeople(code)).find(p => p.email === email);
     if (dup) {
       if (dup.phone !== phone) return fail('This email is already registered for this quiz.', 409);
       return NextResponse.json({ token: signToken({ code, pid: dup.pid }) });
@@ -34,7 +34,7 @@ export async function POST(req) {
       pid: crypto.randomUUID(), name, email, phone, college, department, avatar,
       approval: 'pending', joinedAt: Date.now(), session: null, result: null,
     };
-    room.people.set(p.pid, p);
+    await putPerson(code, p);
     await appendRow('Participants!A:I', [
       new Date(p.joinedAt).toISOString(), code, p.pid, name, email, phone, college, department, avatar,
     ]);

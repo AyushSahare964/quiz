@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { DURATION_SEC, appendRow, score } from '@/lib/quiz';
-import { board, who } from '@/lib/store';
+import { board, getPeople, putPerson, who } from '@/lib/store';
 
 export async function POST(req) {
   try {
     const { token, answers, tabSwitches } = await req.json();
-    const { t: s, room, p } = who(token);
+    const { t: s, room, p } = await who(token);
     if (!p || !s.ids || !answers) return NextResponse.json({ message: 'Invalid submission session.' }, { status: 400 });
 
     if (p.result) {
@@ -22,7 +22,8 @@ export async function POST(req) {
     const { score: sc, total, log, percentage, review } = score(s.ids, answers);
 
     const status = tabs >= 5 ? 'DISQUALIFIED' : elapsedSec > DURATION_SEC + 10 ? 'LATE' : 'VALID';
-    p.result = { score: sc, total, percentage, elapsedSec, status }; // set before the await: blocks double submit
+    p.result = { score: sc, total, percentage, elapsedSec, status }; 
+    await putPerson(room.code, p); // saved before the Sheets call: blocks double submit
 
     await appendRow('Responses!A:N', [
       new Date().toISOString(),
@@ -51,7 +52,7 @@ export async function POST(req) {
       percentage,
       review,
       name: p.name,
-      board: board(room),
+      board: board(await getPeople(room.code)),
     });
   } catch (err) {
     console.error('API Submit error:', err);

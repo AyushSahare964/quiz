@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { DURATION_SEC, PRESETS } from '@/lib/quiz';
-import { AVATARS, board, who } from '@/lib/store';
+import { AVATARS, board, getPeople, putPerson, who } from '@/lib/store';
 
-function view(room, p) {
-  const rows = board(room);
+async function view(room, p) {
+  const rows = board(await getPeople(room.code));
   const mine = rows.find(r => r.pid === p.pid);
   const { name, email, phone, college, department, avatar, approval } = p;
   return {
@@ -16,16 +16,19 @@ function view(room, p) {
 
 // Participant polls this for approval, quiz start and the live leaderboard.
 export async function GET(req) {
-  const { room, p } = who(new URL(req.url).searchParams.get('token'));
+  const { room, p } = await who(new URL(req.url).searchParams.get('token'));
   if (!p) return NextResponse.json({ message: 'Session expired. Please join again.' }, { status: 404 });
-  return NextResponse.json(view(room, p));
+  return NextResponse.json(await view(room, p));
 }
 
 // Profile edit: avatar only.
 export async function POST(req) {
   const { token, avatar } = await req.json().catch(() => ({}));
-  const { room, p } = who(token);
+  const { room, p } = await who(token);
   if (!p) return NextResponse.json({ message: 'Session expired. Please join again.' }, { status: 404 });
-  if (AVATARS.includes(avatar)) p.avatar = avatar;
-  return NextResponse.json(view(room, p));
+  if (AVATARS.includes(avatar)) {
+    p.avatar = avatar;
+    await putPerson(room.code, p);
+  }
+  return NextResponse.json(await view(room, p));
 }
