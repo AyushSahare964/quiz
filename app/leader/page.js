@@ -155,6 +155,7 @@ export default function LeaderPage() {
                 {room.status === 'live' && (
                   <button className="btn-secondary" onClick={() => confirm('End this quiz? New starts will be blocked.') && act({ action: 'end', code })}>■ End quiz</button>
                 )}
+                <a className="btn-secondary" href={`/api/leader/export?code=${code}`} download>⬇ Download results (Sheets / Excel)</a>
                 {pending.length > 0 && (
                   <button className="btn-secondary" onClick={() => act({ action: 'approve', code, pid: 'all' })}>✓ Approve all pending ({pending.length})</button>
                 )}
