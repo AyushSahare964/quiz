@@ -5,3 +5,5 @@ LEADER_CREDENTIALS.txt
 
 .vercel
 .env*
+test-results
+playwright-report
