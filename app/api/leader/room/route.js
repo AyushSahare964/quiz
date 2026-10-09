@@ -62,6 +62,18 @@ export async function POST(req) {
   if (action === 'start' || action === 'end') {
     room.status = action === 'start' ? 'live' : 'ended';
     await putRoom(room);
+    if (action === 'end') {
+      // Conclude: lock in everyone still playing at their current live score so the winner is final.
+      for (const p of await getPeople(code)) {
+        if (!p.session || p.result) continue;
+        const total = p.live?.total ?? p.session.questions.length, sc = p.live?.score ?? 0;
+        p.result = {
+          score: sc, total, percentage: Math.round((sc / total) * 10000) / 100,
+          elapsedSec: Math.round((Date.now() - p.session.serverStartMs) / 10) / 100, status: 'ENDED', at: Date.now(),
+        };
+        await putPerson(code, p);
+      }
+    }
     logEvent(code, action === 'start' ? 'quiz_started' : 'quiz_ended', '', leader);
   }
   else if (action === 'approve' || action === 'reject') {

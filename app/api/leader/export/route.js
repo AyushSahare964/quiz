@@ -16,7 +16,7 @@ export async function GET(req) {
 
   const rows = people
     .sort((a, b) =>
-      (b.result?.score ?? -1) - (a.result?.score ?? -1) || (a.result?.elapsedSec ?? 1e9) - (b.result?.elapsedSec ?? 1e9))
+      (b.result?.score ?? b.live?.score ?? -1) - (a.result?.score ?? a.live?.score ?? -1) || (a.result?.elapsedSec ?? 1e9) - (b.result?.elapsedSec ?? 1e9))
     .map((p, i) => ({
       '#': i + 1,
       Rank: rank[p.pid] ?? '',
@@ -26,15 +26,16 @@ export async function GET(req) {
       College: p.college,
       Department: p.department,
       Approval: p.approval,
-      Score: p.result?.score ?? 0,
+      Score: p.result?.score ?? p.live?.score ?? 0,
       Total: p.result?.total ?? total,
       'Percent (%)': p.result?.percentage ?? 0,
       'Time (sec)': p.result?.elapsedSec ?? '',
       Status: state(p),
+      'Submitted at': p.result?.at ? new Date(p.result.at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : '',
     }));
 
   const ws = XLSX.utils.json_to_sheet(rows);
-  ws['!cols'] = [4, 6, 24, 28, 14, 30, 22, 10, 7, 7, 11, 11, 16].map(wch => ({ wch }));
+  ws['!cols'] = [4, 6, 24, 28, 14, 30, 22, 10, 7, 7, 11, 11, 16, 22].map(wch => ({ wch }));
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Results');
   const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });

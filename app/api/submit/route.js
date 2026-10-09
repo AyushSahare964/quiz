@@ -22,7 +22,7 @@ export async function POST(req) {
     const { score: sc, total, log, percentage, review } = score(s.ids, answers);
 
     const status = tabs >= 5 ? 'DISQUALIFIED' : elapsedSec > durationSec(room.preset) + 10 ? 'LATE' : 'VALID';
-    p.result = { score: sc, total, percentage, elapsedSec, status }; 
+    p.result = { score: sc, total, percentage, elapsedSec, status, at: Date.now() }; 
     await putPerson(room.code, p); // saved before the Sheets call: blocks double submit
 
     await appendRow('Responses!A:N', [

@@ -2443,3 +2443,12 @@ body.intro-mode .shell {
 }
 
 
+
+.winner-banner {
+  display: flex; align-items: center; gap: 16px; margin: 14px 0 6px; padding: 16px 20px; border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2px solid #f59e0b; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.25);
+}
+.winner-trophy { font-size: 46px; }
+.winner-banner small { display: block; font-size: 11px; font-weight: 800; letter-spacing: 0.16em; color: #92400e; }
+.winner-banner strong { display: block; font-size: 22px; font-weight: 900; color: #78350f; }
+.winner-banner span:last-child { font-size: 13px; color: #92400e; font-weight: 600; }

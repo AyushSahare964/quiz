@@ -123,6 +123,13 @@ export default function Page() {
     } catch {}
   }, []);
 
+  // Report answers (debounced) so the live leaderboard shows this participant's running score.
+  useEffect(() => {
+    if (phase !== 'quiz' || !session) return;
+    const id = setTimeout(() => post('/api/progress', { token: session.token, answers }).catch(() => {}), 500);
+    return () => clearTimeout(id);
+  }, [answers, phase, session]);
+
   // QR links open the site as /?code=XXXXXX: prefill the join code.
   useEffect(() => {
     const c = new URLSearchParams(location.search).get('code');
@@ -517,7 +524,7 @@ export default function Page() {
 
               <section className="card" style={{ marginTop: 20 }}>
                 <h2 className="review-title">🏆 Live Leaderboard</h2>
-                <Leaderboard rows={lobby.board} me={lobby.board.find(r => r.name === lobby.me.name)?.pid} />
+                <Leaderboard final={lobby.room.status === 'ended'} rows={lobby.board} me={lobby.board.find(r => r.name === lobby.me.name)?.pid} />
               </section>
             </>
           )}
@@ -870,7 +877,7 @@ export default function Page() {
 
               <div className="review-section">
                 <h2 className="review-title">🏆 Live Leaderboard</h2>
-                <Leaderboard rows={lobby?.board || result?.board} me={(lobby?.board || result?.board || []).find(r => r.name === result?.name)?.pid} />
+                <Leaderboard final={lobby?.room.status === 'ended'} rows={lobby?.board || result?.board} me={(lobby?.board || result?.board || []).find(r => r.name === result?.name)?.pid} />
               </div>
 
               <div style={{ marginTop: 36, display: 'flex', justifyContent: 'center', gap: 14 }}>

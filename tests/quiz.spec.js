@@ -57,6 +57,11 @@ test('end-to-end quiz flow', async ({ browser, baseURL }) => {
     await P.getByRole('button', { name: /Next/ }).click();
   }
   await expect(P.getByText('Question 4 of 35')).toBeVisible();
+  // live score: leader's leaderboard shows the in-progress participant with running score + timestamp
+  const liveRow = L.locator('.lb-row', { hasText: 'Playwright Tester' });
+  await expect(liveRow).toContainText('Live', { timeout: 10_000 });
+  await expect(liveRow).toContainText('3 answered', { timeout: 10_000 });
+  await expect(liveRow).toContainText(/\d{1,2}:\d{2}:\d{2}/);
   // jump to the last question via palette, then submit (unanswered confirm dialog is auto-accepted)
   await P.locator('.palette-pill').last().click();
   await P.getByRole('button', { name: /Review & Submit Quiz/ }).click();
@@ -66,6 +71,13 @@ test('end-to-end quiz flow', async ({ browser, baseURL }) => {
   // --- Live leaderboard on both sides ---
   await expect(P.locator('.lb-row', { hasText: 'Playwright Tester' })).toBeVisible();
   await expect(L.locator('.lb-row', { hasText: 'Playwright Tester' })).toBeVisible({ timeout: 10_000 });
+
+  await expect(L.locator('.lb-row', { hasText: 'Playwright Tester' })).toContainText('1st'.slice(0, 0) + '/35');
+
+  // --- Conclude: winner declared ---
+  await L.getByRole('button', { name: /Conclude quiz/ }).click();
+  await expect(L.locator('.winner-banner')).toContainText('Playwright Tester', { timeout: 10_000 });
+  await expect(P.locator('.winner-banner')).toContainText('Playwright Tester', { timeout: 10_000 });
 
   // --- Excel export has the participant's score ---
   const [dl] = await Promise.all([L.waitForEvent('download'), L.getByRole('link', { name: /Download results/ }).click()]);

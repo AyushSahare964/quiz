@@ -173,7 +173,7 @@ export default function LeaderPage() {
                   <button className="btn-primary" style={{ width: 'auto' }} onClick={() => act({ action: 'start', code })}>▶ START QUIZ</button>
                 )}
                 {room.status === 'live' && (
-                  <button className="btn-secondary" onClick={() => confirm('End this quiz? New starts will be blocked.') && act({ action: 'end', code })}>■ End quiz</button>
+                  <button className="btn-secondary" onClick={() => confirm('Conclude the quiz and declare the winner? Anyone still playing is locked in at their current score.') && act({ action: 'end', code })}>🏁 Conclude quiz & declare winner</button>
                 )}
                 <button className="btn-secondary" style={{ color: 'var(--error)' }} onClick={() => confirmDelete(code, room.title, true)}>🗑 Delete quiz</button>
                 <a className="btn-secondary" href={`/api/leader/export?code=${code}`} download>⬇ Download results (Excel .xlsx)</a>
@@ -218,7 +218,7 @@ export default function LeaderPage() {
                   <span>⛶</span> Full Screen (PPT Mode)
                 </button>
               </div>
-              <Leaderboard rows={room.board} />
+              <Leaderboard final={room.status === 'ended'} rows={room.board} />
             </section>
 
             {/* FULLSCREEN PROJECTOR OVERLAY FOR PPT / AUDITORIUM */}
