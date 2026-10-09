@@ -85,6 +85,16 @@ export default function LeaderPage() {
     }
   }
 
+  async function confirmDelete(c, t, leave) {
+    if (!confirm(`Delete quiz "${t}" (${c}) permanently? All its participants and scores will be removed.`)) return;
+    setError('');
+    try {
+      await api({ action: 'delete', code: c });
+      if (leave) { setCode(''); setRoom(null); }
+      refresh();
+    } catch (e) { setError(e.message); }
+  }
+
   const pending = room?.people.filter(p => p.approval === 'pending') || [];
 
   return (
@@ -125,6 +135,7 @@ export default function LeaderPage() {
                     <span>{r.title}</span>
                     <span className={`lb-state ${r.status}`}>{r.status}</span>
                     <small>{r.count} joined</small>
+                    <button className="mini no" onClick={e => { e.stopPropagation(); confirmDelete(r.code, r.title); }}>Delete</button>
                   </div>
                 ))}
               </>
@@ -155,6 +166,7 @@ export default function LeaderPage() {
                 {room.status === 'live' && (
                   <button className="btn-secondary" onClick={() => confirm('End this quiz? New starts will be blocked.') && act({ action: 'end', code })}>■ End quiz</button>
                 )}
+                <button className="btn-secondary" style={{ color: 'var(--error)' }} onClick={() => confirmDelete(code, room.title, true)}>🗑 Delete quiz</button>
                 <a className="btn-secondary" href={`/api/leader/export?code=${code}`} download>⬇ Download results (Excel .xlsx)</a>
                 {pending.length > 0 && (
                   <button className="btn-secondary" onClick={() => act({ action: 'approve', code, pid: 'all' })}>✓ Approve all pending ({pending.length})</button>

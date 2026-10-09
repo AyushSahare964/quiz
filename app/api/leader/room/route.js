@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PRESETS, durationSec, logEvent } from '@/lib/quiz';
-import { board, getPeople, getRoom, leaderOf, listRooms, newCode, putPerson, putRoom } from '@/lib/store';
+import { board, deleteRoom, getPeople, getRoom, leaderOf, listRooms, newCode, putPerson, putRoom } from '@/lib/store';
 
 const view = async room => {
   const people = await getPeople(room.code);
@@ -52,6 +52,12 @@ export async function POST(req) {
 
   const room = await getRoom(code);
   if (!room) return fail('Quiz not found.', 404);
+
+  if (action === 'delete') {
+    await deleteRoom(code);
+    logEvent(code, 'quiz_deleted', room.title, leader);
+    return NextResponse.json({ deleted: code });
+  }
 
   if (action === 'start' || action === 'end') {
     room.status = action === 'start' ? 'live' : 'ended';
