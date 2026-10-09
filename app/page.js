@@ -123,6 +123,12 @@ export default function Page() {
     } catch {}
   }, []);
 
+  // QR links open the site as /?code=XXXXXX: prefill the join code.
+  useEffect(() => {
+    const c = new URLSearchParams(location.search).get('code');
+    if (c) setForm(f => ({ ...f, code: c.toUpperCase().slice(0, 6) }));
+  }, []);
+
   // Poll approval / quiz start / live leaderboard while waiting or after finishing.
   useEffect(() => {
     if (!joinToken || (phase !== 'lobby' && phase !== 'result')) return;

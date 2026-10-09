@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
+import QRCode from 'qrcode';
 import Leaderboard from '../Leaderboard';
 
 async function api(body) {
@@ -21,6 +22,7 @@ export default function LeaderPage() {
   const [title, setTitle] = useState('');
   const [preset, setPreset] = useState('set-1');
   const [error, setError] = useState('');
+  const [qr, setQr] = useState('');
 
   const refresh = useCallback(async () => {
     try {
@@ -95,6 +97,11 @@ export default function LeaderPage() {
     } catch (e) { setError(e.message); }
   }
 
+  useEffect(() => {
+    setQr('');
+    if (code) QRCode.toDataURL(`${location.origin}/?code=${code}`, { width: 280, margin: 1 }).then(setQr);
+  }, [code]);
+
   const pending = room?.people.filter(p => p.approval === 'pending') || [];
 
   return (
@@ -156,6 +163,8 @@ export default function LeaderPage() {
                   <span>JOIN CODE</span>
                   <strong>{room.code}</strong>
                   <em className={`lb-state ${room.status}`}>{room.status.toUpperCase()}</em>
+                  {qr && <a href={qr} download={`quiz-${code}-qr.png`} title="Click to download"><img src={qr} alt={`QR to join quiz ${code}`} width={140} height={140} style={{ marginTop: 8, borderRadius: 8 }} /></a>}
+                  <small style={{ color: 'var(--text-muted)' }}>Scan to join</small>
                 </div>
               </div>
               {error && <div className="alert-error" style={{ marginTop: 14 }}>⚠️ {error}</div>}
