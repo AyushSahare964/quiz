@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { DURATION_SEC, PRESETS } from '@/lib/quiz';
+import { PRESETS, durationSec } from '@/lib/quiz';
 import { AVATARS, board, getPeople, putPerson, who } from '@/lib/store';
 
 async function view(room, p) {
@@ -7,9 +7,9 @@ async function view(room, p) {
   const mine = rows.find(r => r.pid === p.pid);
   const { name, email, phone, college, department, avatar, approval } = p;
   return {
-    room: { code: room.code, title: room.title, preset: PRESETS[room.preset].name, status: room.status, durationSeconds: DURATION_SEC },
+    room: { code: room.code, title: room.title, preset: PRESETS[room.preset].name, status: room.status, durationSeconds: durationSec(room.preset) },
     me: { name, email, phone, college, department, avatar, approval, rank: mine?.rank ?? null, finished: !!p.result },
-    session: p.session && !p.result && Date.now() - p.session.serverStartMs < DURATION_SEC * 1000 ? p.session : null,
+    session: p.session && !p.result && Date.now() - p.session.serverStartMs < durationSec(room.preset) * 1000 ? p.session : null,
     board: rows,
   };
 }

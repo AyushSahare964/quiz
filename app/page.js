@@ -357,19 +357,23 @@ export default function Page() {
 
               <div className="grid-inputs-3">
                 <div className="field-group">
-                  <label htmlFor="code" className="field-label">Quiz Join Code</label>
+                  <label htmlFor="code" className="field-label">
+                    <span className="field-icon">🔑</span> Quiz Join Code
+                  </label>
                   <input
                     id="code"
-                    className="text-input"
+                    className="text-input code-input"
                     autoComplete="off"
                     placeholder="e.g. K7M2QX"
                     value={form.code}
                     onChange={setF('code')}
-                    style={{ textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 800, textAlign: 'center' }}
+                    style={{ textTransform: 'uppercase', letterSpacing: '0.16em', fontWeight: 800, textAlign: 'center' }}
                   />
                 </div>
                 <div className="field-group">
-                  <label htmlFor="name" className="field-label">Full Name</label>
+                  <label htmlFor="name" className="field-label">
+                    <span className="field-icon">👤</span> Full Name
+                  </label>
                   <input
                     id="name"
                     className="text-input"
@@ -380,7 +384,9 @@ export default function Page() {
                   />
                 </div>
                 <div className="field-group">
-                  <label htmlFor="phone" className="field-label">Phone No.</label>
+                  <label htmlFor="phone" className="field-label">
+                    <span className="field-icon">📱</span> Phone No.
+                  </label>
                   <input
                     id="phone"
                     className="text-input"
@@ -391,7 +397,9 @@ export default function Page() {
                   />
                 </div>
                 <div className="field-group">
-                  <label htmlFor="email" className="field-label">Email Address</label>
+                  <label htmlFor="email" className="field-label">
+                    <span className="field-icon">✉️</span> Email Address
+                  </label>
                   <input
                     id="email"
                     className="text-input"
@@ -402,7 +410,9 @@ export default function Page() {
                   />
                 </div>
                 <div className="field-group">
-                  <label htmlFor="college" className="field-label">College Name</label>
+                  <label htmlFor="college" className="field-label">
+                    <span className="field-icon">🏛️</span> College Name
+                  </label>
                   <input
                     id="college"
                     className="text-input"
@@ -413,7 +423,9 @@ export default function Page() {
                   />
                 </div>
                 <div className="field-group">
-                  <label htmlFor="department" className="field-label">Department</label>
+                  <label htmlFor="department" className="field-label">
+                    <span className="field-icon">🔬</span> Department
+                  </label>
                   <input
                     id="department"
                     className="text-input"
@@ -426,7 +438,9 @@ export default function Page() {
               </div>
 
               <div className="avatar-compact-row">
-                <span className="field-label" style={{ marginBottom: 0, whiteSpace: 'nowrap' }}>Choose Avatar:</span>
+                <span className="field-label" style={{ marginBottom: 0, whiteSpace: 'nowrap' }}>
+                  <span className="field-icon">🎭</span> Choose Avatar:
+                </span>
                 <div className="avatar-grid">
                   {AVATARS.map(a => (
                     <button
@@ -442,17 +456,17 @@ export default function Page() {
               </div>
 
               <div className="rules-chips-row">
-                <span className="rules-chip">📋 15 MCQs (7 Easy • 5 Med • 3 Tough)</span>
-                <span className="rules-chip">⏱ 20-Min Timer</span>
-                <span className="rules-chip">✓ 1 Mark / No Negative</span>
-                <span className="rules-chip">💡 Instant Explanations</span>
-                <span className="rules-chip">🛡️ Tab Guard (Max 4 warnings)</span>
+                <span className="rules-chip">📋 35 Biomedical MCQs</span>
+                <span className="rules-chip">⏱ 35-Min Live Timer</span>
+                <span className="rules-chip">✓ +1 Mark / 0 Negative</span>
+                <span className="rules-chip">💡 Instant Scientific Insights</span>
+                <span className="rules-chip">🛡️ Anti-Cheat Tab Guard</span>
               </div>
 
               {error && <div className="alert-error" style={{ margin: '8px 0', padding: '8px 14px', fontSize: 13 }}>⚠️ {error}</div>}
 
               <button className="btn-primary" style={{ padding: '12px 24px', fontSize: 15, marginTop: 4 }} disabled={busy} onClick={join}>
-                {busy ? 'JOINING…' : 'JOIN QUIZ 🚀'}
+                {busy ? 'CONNECTING…' : 'JOIN QUIZ 🚀'}
               </button>
             </section>
           )}
@@ -922,7 +936,7 @@ export default function Page() {
             <div>
               <div className="footer-col-title">Assessment Integrity</div>
               <ul className="footer-links">
-                <li>15 Curated Questions</li>
+                <li>35 Curated Questions</li>
                 <li>Anti-Plagiarism Tab Guard</li>
                 <li>Instant Scientific Explanations</li>
                 <li>Verified Session Scorer</li>

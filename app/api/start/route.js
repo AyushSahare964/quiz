@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { DURATION_SEC, eventQuestions, shuffle, signToken } from '@/lib/quiz';
+import { durationSec, eventQuestions, shuffle, signToken } from '@/lib/quiz';
 import { putPerson, who } from '@/lib/store';
 
 export async function POST(req) {
@@ -29,7 +29,7 @@ export async function POST(req) {
     p.session = {
       token: signToken({ code: room.code, pid: p.pid, startMs, ids: questions.map(q => q.id) }),
       serverStartMs: startMs,
-      durationSeconds: DURATION_SEC,
+      durationSeconds: durationSec(room.preset),
       questions,
     };
     await putPerson(room.code, p);

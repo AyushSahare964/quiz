@@ -8,8 +8,8 @@ export default function Leaderboard({ rows = [], me }) {
   return (
     <div className="lb-list">
       {rows.map(r => (
-        <div key={r.pid} className={`lb-row ${r.pid === me ? 'me' : ''} ${r.rank && r.rank <= 3 ? 'top' : ''}`}>
-          <span className="lb-rank">{r.rank ? (['🥇', '🥈', '🥉'][r.rank - 1] || r.rank) : '–'}</span>
+        <div key={r.pid} className={`lb-row ${r.pid === me ? 'me' : ''} ${r.rank && r.rank <= 3 ? 'top' : ''} ${r.rank === 1 ? 'rank-gold' : r.rank === 2 ? 'rank-silver' : r.rank === 3 ? 'rank-bronze' : ''}`}>
+          <span className="lb-rank">{r.rank ? (['🥇', '🥈', '🥉'][r.rank - 1] || `#${r.rank}`) : '–'}</span>
           <span className="lb-avatar">{r.avatar}</span>
           <span className="lb-who">
             <strong>{r.name}</strong>

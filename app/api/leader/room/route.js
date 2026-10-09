@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PRESETS, DURATION_SEC, logEvent } from '@/lib/quiz';
+import { PRESETS, durationSec, logEvent } from '@/lib/quiz';
 import { board, getPeople, getRoom, leaderOf, listRooms, newCode, putPerson, putRoom } from '@/lib/store';
 
 const view = async room => {
@@ -9,7 +9,7 @@ const view = async room => {
     title: room.title,
     preset: PRESETS[room.preset].name,
     status: room.status,
-    durationSeconds: DURATION_SEC,
+    durationSeconds: durationSec(room.preset),
     people: people.map(({ session, result, ...p }) => ({
       ...p, state: result ? 'finished' : session ? 'playing' : 'idle',
     })),

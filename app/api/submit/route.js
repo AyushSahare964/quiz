@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { DURATION_SEC, appendRow, score } from '@/lib/quiz';
+import { appendRow, durationSec, score } from '@/lib/quiz';
 import { board, getPeople, putPerson, who } from '@/lib/store';
 
 export async function POST(req) {
@@ -21,7 +21,7 @@ export async function POST(req) {
     const tabs = Math.max(0, Math.floor(Number(tabSwitches || 0)));
     const { score: sc, total, log, percentage, review } = score(s.ids, answers);
 
-    const status = tabs >= 5 ? 'DISQUALIFIED' : elapsedSec > DURATION_SEC + 10 ? 'LATE' : 'VALID';
+    const status = tabs >= 5 ? 'DISQUALIFIED' : elapsedSec > durationSec(room.preset) + 10 ? 'LATE' : 'VALID';
     p.result = { score: sc, total, percentage, elapsedSec, status }; 
     await putPerson(room.code, p); // saved before the Sheets call: blocks double submit
 
