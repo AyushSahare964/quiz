@@ -470,7 +470,7 @@ export default function Page() {
 
               <div className="rules-chips-row">
                 <span className="rules-chip">📋 35 Biomedical MCQs</span>
-                <span className="rules-chip">⏱ 35-Min Live Timer</span>
+                <span className="rules-chip">⏱ 20-Min Live Timer</span>
                 <span className="rules-chip">✓ +1 Mark / 0 Negative</span>
                 <span className="rules-chip">💡 Instant Scientific Insights</span>
                 <span className="rules-chip">🛡️ Anti-Cheat Tab Guard</span>
